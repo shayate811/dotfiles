@@ -53,6 +53,11 @@ alias open='explorer.exe'
 alias ls='ls --color=auto'
 alias ll='ls -alF'
 
+# cdしたら自動でls
+function chpwd() {
+    ls --color=auto
+}
+
 # ==============================================================================
 # Prompt & Git Integration
 # ==============================================================================
