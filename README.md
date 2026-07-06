@@ -130,7 +130,7 @@ cat ~/.ssh/id_ed25519.pub
 ssh -T git@github.com
 
 # Gitユーザー設定 (初回のみ必須)
-git config --global user.name "Hayate Saito"
+git config --global user.name "Your Name"
 git config --global user.email "your_email@example.com"
 ```
 
