@@ -80,7 +80,15 @@ git clone https://github.com/shayate811/dotfiles.git ~/dotfiles
 cd ~/dotfiles && bash install.sh
 ```
 
-スクリプトは冪等（何度実行しても同じ結果）。既存ファイルがある場合は `~/.dotfiles_backup/` へ自動退避してから上書きする。
+**`install.sh` の動作:**
+1. WSL2環境かどうかをチェックし、非WSL環境では即座にエラー終了する
+2. 既存ファイルがある場合はタイムスタンプ付きディレクトリ（`~/.dotfiles_backup/YYYYMMDD_HHMMSS/`）へ自動退避
+3. `.zshrc` のシンボリックリンクを `~/` に作成
+4. `~/.zshrc.local` が未作成なら空ファイルを生成（APIキー等の秘匿情報はここに書く）
+5. `wsl/wsl.conf` を `/etc/wsl.conf` へコピー（sudo実行）
+6. `cmd.exe` 経由でWindowsユーザー名を自動取得し、WezTermの設定を `/mnt/c/Users/<USER>/.config/wezterm/` にリンク
+
+スクリプトは冪等（何度実行しても同じ結果）。
 
 **セットアップ内容:**
 | 対象 | 配置先 |
