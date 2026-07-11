@@ -73,36 +73,60 @@ wsl --shutdown
 ```
 
 ## 📦 2. Dotfilesのインストール
-GitHubから設定ファイルをダウンロードし、シンボリックリンクを貼る。
+GitHubからクローンして `install.sh` を実行するだけで、シンボリックリンクの作成から `wsl.conf` の配置まで自動で完了する。
 
 ```bash
-# 1. リポジトリをクローン
 git clone https://github.com/shayate811/dotfiles.git ~/dotfiles
-
-# 2. 既存の.zshrcがあれば退避 (念のため)
-[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.backup
-
-# 3. シンボリックリンク作成 (実体はdotfiles、配置はホーム)
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
-
-# 4. 設定反映
-source ~/.zshrc
+cd ~/dotfiles && bash install.sh
 ```
 
-### WezTerm設定の配置 (Windows側で実行)
+スクリプトは冪等（何度実行しても同じ結果）。既存ファイルがある場合は `~/.dotfiles_backup/` へ自動退避してから上書きする。
 
-WezTermの設定はWindows側に配置する。PowerShellで実行:
+**セットアップ内容:**
+| 対象 | 配置先 |
+|---|---|
+| `.zshrc` | `~/.zshrc`（WSL側） |
+| `wsl/wsl.conf` | `/etc/wsl.conf`（要 sudo） |
+| `wezterm/*.lua` | `/mnt/c/Users/<USER>/.config/wezterm/`（Windows側） |
+| `.zshrc.local` | `~/.zshrc.local`（未作成の場合のみ生成） |
+
+`wsl.conf` を変更した場合は PowerShell で WSL を再起動する:
 
 ```powershell
-# WezTerm設定ディレクトリ作成
+wsl --shutdown
+```
+
+<details>
+<summary>手動でセットアップする場合</summary>
+
+```bash
+# 既存の .zshrc がある場合は退避
+[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.backup
+
+# シンボリックリンク作成
+ln -sf ~/dotfiles/.zshrc ~/.zshrc
+
+# wsl.conf の配置
+sudo cp ~/dotfiles/wsl/wsl.conf /etc/wsl.conf
+
+# .zshrc.local の作成
+touch ~/.zshrc.local
+
+# 設定反映
+exec zsh
+```
+
+WezTerm設定は Windows 側で PowerShell を**管理者権限**で実行:
+
+```powershell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\wezterm"
 
-# dotfilesからシンボリックリンク作成 (要管理者権限)
-# ※ dotfilesのパスは実際のクローン先に合わせる
 $dotfiles = "$env:USERPROFILE\dotfiles"
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\wezterm\wezterm.lua" -Target "$dotfiles\wezterm\wezterm.lua"
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\wezterm\wezterm.lua"  -Target "$dotfiles\wezterm\wezterm.lua"
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\wezterm\keybinds.lua" -Target "$dotfiles\wezterm\keybinds.lua"
 ```
+
+</details>
 
 ## 🔑 3. Git & SSH設定
 GitHubと通信するための鍵を作成する。
