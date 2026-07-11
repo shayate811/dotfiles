@@ -50,6 +50,21 @@ if [ -f "$DOTFILES_DIR/wsl/wsl.conf" ]; then
   fi
 fi
 
+# -------------------------------------------------------------------- Git --
+info ""
+info "=== Git ==="
+
+SHARED_GITCONFIG="$DOTFILES_DIR/git/gitconfig.shared"
+INCLUDE_LINE="[include]"
+INCLUDE_PATH="	path = $SHARED_GITCONFIG"
+
+if git config --global --get-all include.path 2>/dev/null | grep -qF "$SHARED_GITCONFIG"; then
+  info "git include.path は既に設定済み → スキップ"
+else
+  git config --global --add include.path "$SHARED_GITCONFIG"
+  success "git config --global include.path → $SHARED_GITCONFIG"
+fi
+
 # -------------------------------------------------------------- Windows側 --
 info ""
 info "=== Windows side (WezTerm) ==="

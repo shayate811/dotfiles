@@ -86,7 +86,8 @@ cd ~/dotfiles && bash install.sh
 3. `.zshrc` のシンボリックリンクを `~/` に作成
 4. `~/.zshrc.local` が未作成なら空ファイルを生成（APIキー等の秘匿情報はここに書く）
 5. `wsl/wsl.conf` を `/etc/wsl.conf` へコピー（sudo実行）
-6. `cmd.exe` 経由でWindowsユーザー名を自動取得し、WezTermの設定を `/mnt/c/Users/<USER>/.config/wezterm/` にリンク
+6. `git/gitconfig.shared` を `~/.gitconfig` に `[include]` で追記（エイリアス等の共有設定）
+7. `cmd.exe` 経由でWindowsユーザー名を自動取得し、WezTermの設定を `/mnt/c/Users/<USER>/.config/wezterm/` にリンク
 
 スクリプトは冪等（何度実行しても同じ結果）。
 
@@ -97,6 +98,7 @@ cd ~/dotfiles && bash install.sh
 | `wsl/wsl.conf` | `/etc/wsl.conf`（要 sudo） |
 | `wezterm/*.lua` | `/mnt/c/Users/<USER>/.config/wezterm/`（Windows側） |
 | `.zshrc.local` | `~/.zshrc.local`（未作成の場合のみ生成） |
+| `git/gitconfig.shared` | `~/.gitconfig` に `[include]` で自動追記 |
 
 `wsl.conf` を変更した場合は PowerShell で WSL を再起動する:
 
